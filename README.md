@@ -4,10 +4,10 @@ If you want to setup wordpress in your VM for testing purpose, then this reposit
 
 ### Prerequisite
 I am assuming following things are already installed on your Laptop or Desktop
-  - [ VirtualBox ] ( Version 4.3.x or higher ) 
-  - [ Vagrant ] ( 1.7.4 or higher )
-  - [ Ansible ] ( 1.9.4 or higher )
-  - [ Git client ] 
+  - [VirtualBox] : ( Version 4.3.x or higher ) 
+  - [Vagrant]: ( 1.7.4 or higher )
+  - [Ansible]: ( 1.9.4 or higher )
+  - [Git client] 
 
 [VirtualBox]: <https://en.wikipedia.org/wiki/VirtualBox>
 [Vagrant]:<https://en.wikipedia.org/wiki/Vagrant_%28software%29>
@@ -16,11 +16,12 @@ I am assuming following things are already installed on your Laptop or Desktop
 
 Download the WordPress Repository 
 ```sh
-git clone URL
+git clone https://github.com/rahulinux/wordpress
 ```
 
 Setup WordPress
 ```sh
+cd wordpress
 vagrant up
 ```
 
