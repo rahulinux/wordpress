@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+  ServerAdmin admin@{{ domain }}
+  ServerName  {{ domain }} 
+
+  DirectoryIndex index.html, index.php
+  DocumentRoot {{ site_home }}/ 
+
+  # Custom log file locations
+  LogLevel warn
+  ErrorLog  {{ site_home }}/log/error.log
+  CustomLog {{ site_home }}/log/access.log combined
+
+  <Directory {{ site_home }}/>
+      AllowOverride All
+  </Directory>
+
+</VirtualHost>

@@ -1,0 +1,20 @@
+---
+## Common vars
+base_pkgs: [ wget, unzip, MySQL-python, php, php-mysql, php-devel, mysql-server, httpd ]
+wordpress_download: 'http://wordpress.org/latest.tar.gz'
+
+## Database vars
+db_name: 'wordpress'
+db_user: 'webadmin'
+db_password: 'asWK.KCUw.10w'
+
+## Apache vars
+domain: 'wordpress.bigdecisions.loc'
+site_home: '/var/www/{{ domain }}'
+site_user: 'web'
+
+## WordPress vars
+weblog_title: 'DEMO Blog'
+wp_user: 'admin'
+wp_pass: 'admin'
+wp_email: 'admin@{{ domain }}'

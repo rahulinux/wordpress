@@ -1,0 +1,12 @@
+---
+   # Install base packages
+   - include: base.yml
+
+   # Configure Database
+   - include: mysql.yml
+
+   # Configure Apache
+   - include: httpd.yml
+
+   # Configure Wordpress
+   - include: wordpress.yml

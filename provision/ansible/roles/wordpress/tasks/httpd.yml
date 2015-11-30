@@ -1,0 +1,32 @@
+---
+
+   - name: Adding user for apache
+     user: name={{ site_user }} home={{ site_home }} groups=apache createhome=yes append=yes
+
+   - name: Adding Apache into StartUP
+     service: name=httpd enabled=yes
+
+   - name: Starting Apache server
+     service: name=httpd state=started
+
+   - name: Creating require directories
+     file: state=directory path={{ site_home }}/log owner={{ site_user }} group={{ site_user }} mode=0755
+
+   - name: Setting Permissions
+     file: state=directory path={{ site_home }} owner={{ site_user }} group={{ site_user }} mode=0755 recurse=yes
+
+   - name: Configuring host file
+     lineinfile: "dest=/etc/hosts regexp=^{{  ansible_eth1.ipv4.address }} line='{{  ansible_eth1.ipv4.address }} {{ domain }}'"
+
+   - shell: iptables -L -n -v | grep -q 'Allow http'
+     register: iptable_rules
+     ignore_errors: true
+
+   - name: Allow HTTP Traffic adding rules in iptables
+     shell: iptables -I INPUT -p tcp -m tcp --dport 80 -m comment --comment "Allow http" -j ACCEPT
+     when: iptable_rules|failed
+
+   - name: Configuring Apache virtual host
+     template: src=vhost.j2 dest=/etc/httpd/conf.d/{{ domain }}.conf mode=0644
+     notify:
+         - restart httpd

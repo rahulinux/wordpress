@@ -1,0 +1,6 @@
+---
+
+   - name: Installing base packages
+     yum: name={{ item }}
+     with_items:
+          - "{{ base_pkgs }}"

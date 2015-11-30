@@ -1,0 +1,48 @@
+---
+
+   - name: Downloading wordpress
+     get_url: url={{ wordpress_download }} dest=/tmp/wordpress.tar.gz
+
+   - name: Extracting wordpress
+     unarchive: src=/tmp/wordpress.tar.gz dest=/tmp/ copy=no 
+
+   - name: Coping wordpress files to apache root
+     shell: mv -n /tmp/wordpress/* {{ site_home }}/ 
+
+   - shell: mv -n {{ site_home }}/wp-config-sample.php {{ site_home }}/wp-config.php 
+
+   - name: Installing Plugins
+     get_url: url=https://downloads.wordpress.org/plugin/crayon-syntax-highlighter.zip dest=/tmp/crayon-syntax-highlighter.zip
+
+   - name: Installing Plugins
+     unarchive: src=/tmp/crayon-syntax-highlighter.zip dest={{ site_home }}/wp-content/plugins/ copy=no
+
+   - name: Setting Permissions
+     file: path={{ site_home }} owner={{ site_user }} group={{ site_user }} recurse=yes
+
+   - name: Configuring Wordpress
+     replace: regexp={{ item.search }} replace={{ item.replace }} dest={{ site_home }}/wp-config.php 
+     with_items:
+          - { search: 'database_name_here', replace: "{{ db_name }}" }
+          - { search: 'username_here', replace: "{{ db_user }}" }
+          - { search: 'password_here', replace: "{{ db_password }}" }
+
+   - name: Adding htaccess
+     template: src=htaccess.j2 dest={{ site_home }}/.htaccess owner={{ site_user }} group={{ site_user }} mode=0666
+     notify:
+        - restart httpd
+
+   - name: Finishing WordPress Installation
+     shell: curl --data-urlencode "weblog_title={{ weblog_title }}" \
+                 --data-urlencode "user_name={{ wp_user }}" \
+                 --data-urlencode "admin_password={{ wp_pass }}" \
+                 --data-urlencode "admin_password2={{ wp_pass }}" \
+                 --data-urlencode "admin_email={{ wp_email }}" \
+                 --data-urlencode "Submit=Install+WordPress" \
+                   http://{{ domain }}/wp-admin/install.php?step=2
+     register: http_status
+     until: http_status.stdout.find("installed WordPress") != -1 
+     retries: 3
+     delay: 10
+
+   - debug: var="Kindly insert following line in /etc/hosts file to open wordpress blog\n{{  ansible_eth1.ipv4.address }} {{ domain }}"

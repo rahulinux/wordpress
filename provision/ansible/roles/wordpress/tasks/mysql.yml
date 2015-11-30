@@ -1,0 +1,13 @@
+---
+
+   - name: Adding MySQL into StartUP
+     service: name=mysqld enabled=yes
+
+   - name: Starting MySQL Server
+     service: name=mysqld state=started
+
+   - name: Creating Database for Wordpress
+     mysql_db: name={{ db_name }} state=present
+
+   - name: Adding db user for Wordpress
+     mysql_user: name={{ db_user }} password={{ db_password }} priv=wordpress.*:ALL,GRANT state=present
